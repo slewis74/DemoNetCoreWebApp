@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using DemoClassLibrary;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.Models;
 
@@ -13,6 +10,7 @@ namespace WebApplication.Controllers
         public IActionResult Index()
         {
             ViewData["AppTitle"] = "Demo .NET Core Web App";
+            ViewData["SampleText"] = new DemoClass().SampleText;
 
             return View();
         }
