@@ -13,6 +13,7 @@ namespace WebApplication
     {
         public Startup(IConfiguration configuration)
         {
+            // Test for pre-release build
             Configuration = configuration;
         }
 
