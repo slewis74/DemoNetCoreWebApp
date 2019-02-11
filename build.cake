@@ -1,4 +1,5 @@
 #tool "nuget:?package=GitVersion.CommandLine&prerelease"
+#tool "nuget:?package=OctopusTools"
 
 using Path = System.IO.Path;
 using IO = System.IO;
@@ -85,16 +86,11 @@ Task("__Publish")
 Task("__Pack")
     .Does(() => {
     
-    StartProcess("dotnet", new ProcessSettings {
-        Arguments = new ProcessArgumentBuilder()
-            .Append("octo")
-            .Append("pack")
-            .Append($"--id={packageId}")
-            .Append($"--version={nugetVersion}")
-            .Append($"--basePath=\"{publishDir}\"")
-            .Append($"--outFolder=\"{artifactsDir}\"")
-        }
-    );
+    OctoPack(packageId, new OctopusPackSettings{
+        BasePath = publishDir,
+        Version=nugetVersion,
+        OutFolder=artifactsDir
+        });
 });
 
 Task("__Push")
@@ -104,15 +100,7 @@ Task("__Push")
     
     if (!isLocalBuild)
     {
-        StartProcess("dotnet", new ProcessSettings {
-            Arguments = new ProcessArgumentBuilder()
-                .Append("octo")
-                .Append("push")
-                .Append($"--server={octopusServer}")
-                .Append($"--apikey={octopusApikey}")
-                .Append($"--package=\"{packageFile}\"")
-            }
-        );
+        OctoPush(octopusServer, octopusApiKey, new [] {packageFile});
     }
     else
     {
