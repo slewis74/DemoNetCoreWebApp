@@ -100,7 +100,7 @@ Task("__Push")
     
     if (!isLocalBuild)
     {
-        OctoPush(octopusServer, octopusApiKey, new FilePath(packageFile), new OctopusPushSetting());
+        OctoPush(octopusServer, octopusApiKey, new FilePath(packageFile), new OctopusPushSettings());
     }
     else
     {
