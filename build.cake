@@ -8,7 +8,7 @@ using Cake.Common.Tools;
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 var octopusServer = Argument("octopusServer", "");
-var octopusApikey = Argument("octopusApiKey", "");
+var octopusApiKey = Argument("octopusApiKey", "");
 
 var isLocalBuild = string.IsNullOrWhiteSpace(octopusServer);
 
