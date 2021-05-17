@@ -4,3 +4,4 @@ Updated to test build..
 
 Test for I18N chars in the commit message.
 
+Lots of work item references
