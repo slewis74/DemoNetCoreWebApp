@@ -24,7 +24,7 @@ jobs:
     - name: Run Build 🏗
       id: build
       run: |
-        dotnet publish ./source/WebApplication/WebApplication.csproj --output ../../published -p:Version=2.0.${{ github.run_number }}
+        dotnet publish ./source/WebApplication/WebApplication.csproj --output published -p:Version=2.0.${{ github.run_number }}
         (cd published && zip -r "$OLDPWD/DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}.zip" .)
 
     - uses: actions/upload-artifact@v3
