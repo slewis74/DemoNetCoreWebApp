@@ -1,0 +1,108 @@
+name: Build, test and publish
+
+on:
+  push:
+    branches: '**'
+  workflow_dispatch:
+
+jobs:
+  env:
+    OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
+    OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+    OCTOPUS_SPACE: 'GHA Demo'
+
+  build:
+    name: Build and unit test code
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.nuke-build.outputs.version }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Run Build 🏗
+      id: build
+      run: |
+        dotnet publish source\WebApplication\WebApplication.csproj --output ../../published -p:Version=2.0.${{ github.run_number }}
+
+    - name: Create package 🏗
+      id: package
+      run: |
+        (cd folder && zip -r "$OLDPWD/DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}.zip" .)
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}
+        path: DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}.zip
+
+  push:
+    name: Push information to Octopus
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}
+        path: DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}.zip
+
+    - name: Push a package to Octopus Deploy 🐙
+      uses: OctopusDeploy/push-package-action@enh-clientupdate
+      with:
+        packages: |
+          artifacts/DemoNetCoreWebAppGHA.${{ needs.build.outputs.version }}.zip
+
+    - name: Push build information to Octopus Deploy 🐙
+      uses: OctopusDeploy/push-build-information-action@enh-clientupdate
+      with:
+        version: ${{ needs.build.outputs.version }}
+        packages: |
+          DemoNetCoreWebAppGHA
+
+  snapshot:
+    name: Snapshot information in Octopus
+    needs: [build, push]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create a release in Octopus Deploy 🐙
+      uses: OctopusDeploy/create-release-action@enh-executions-api
+      with:
+        project: 'DemoNetCoreWebApp'
+        package_version: ${{ needs.build.outputs.version }}
+
+  deploy:
+    name: Deploy snapshot using Octopus
+    needs: [build, snapshot]
+    runs-on: ubuntu-latest
+
+    outputs:
+      server_tasks: ${{ steps.queue_deployments.outputs.server_tasks }}
+
+    steps:
+    - name: Deploy the release in Octopus Deploy 🐙
+      uses: OctopusDeploy/deploy-release-untenanted-action@enh-initialversion
+      id: 'queue_deployments'
+      with:
+        project: 'DemoNetCoreWebApp'
+        release_number: ${{ needs.build.outputs.version }}
+        environments: |
+          Development
+          Integration
+
+  wait:
+    needs: deploy
+    runs-on: ubuntu-latest
+    name: ${{ matrix.deployment.environmentName }}
+    strategy:
+      matrix:
+        deployment: ${{ fromJson(needs.deploy.outputs.server_tasks) }}
+    steps:
+    - name: Waiting for deployment in Octopus Deploy 🐙
+      uses: OctopusDeploy/await-task-action@enh-initialversion
+      with:
+        server_task_id: ${{ matrix.deployment.serverTaskId }}
