@@ -6,11 +6,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  env:
-    OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
-    OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
-    OCTOPUS_SPACE: 'GHA Demo'
-
   build:
     name: Build and unit test code
     runs-on: ubuntu-latest
@@ -45,6 +40,12 @@ jobs:
     name: Push information to Octopus
     needs: build
     runs-on: ubuntu-latest
+
+    env:
+      OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
+      OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+      OCTOPUS_SPACE: 'GHA Demo'
+
     steps:
     - uses: actions/download-artifact@v3
       with:
@@ -68,6 +69,12 @@ jobs:
     name: Snapshot information in Octopus
     needs: [build, push]
     runs-on: ubuntu-latest
+
+    env:
+      OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
+      OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+      OCTOPUS_SPACE: 'GHA Demo'
+
     steps:
     - name: Create a release in Octopus Deploy 🐙
       uses: OctopusDeploy/create-release-action@enh-executions-api
@@ -79,6 +86,11 @@ jobs:
     name: Deploy snapshot using Octopus
     needs: [build, snapshot]
     runs-on: ubuntu-latest
+
+    env:
+      OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
+      OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+      OCTOPUS_SPACE: 'GHA Demo'
 
     outputs:
       server_tasks: ${{ steps.queue_deployments.outputs.server_tasks }}
@@ -98,9 +110,16 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     name: ${{ matrix.deployment.environmentName }}
+
+    env:
+      OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
+      OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+      OCTOPUS_SPACE: 'GHA Demo'
+
     strategy:
       matrix:
         deployment: ${{ fromJson(needs.deploy.outputs.server_tasks) }}
+
     steps:
     - name: Waiting for deployment in Octopus Deploy 🐙
       uses: OctopusDeploy/await-task-action@enh-initialversion
