@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      version: ${{ steps.nuke-build.outputs.version }}
+      version: ${{ steps.build.outputs.version }}
 
     steps:
     - uses: actions/checkout@v3
@@ -26,6 +26,7 @@ jobs:
       run: |
         dotnet publish ./source/WebApplication/WebApplication.csproj --output published -p:Version=2.0.${{ github.run_number }}
         (cd published && zip -r "$OLDPWD/DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}.zip" .)
+        echo "version=2.0.${{ github.run_number }}" >> $GITHUB_OUTPUT
 
     - uses: actions/upload-artifact@v3
       with:
