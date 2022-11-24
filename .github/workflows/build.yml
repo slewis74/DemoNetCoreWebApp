@@ -24,7 +24,7 @@ jobs:
     - name: Run Build 🏗
       id: build
       run: |
-        dotnet publish ./source/WebApplication/WebApplication.csproj --output published -p:Version=2.1.0-demo${{ github.run_number }}-${{ github.run_attempt }}
+        dotnet publish ./source/WebApplication/WebApplication.csproj --output published -p:Version=2.1.${{ github.run_number }}
         (cd published && zip -r "$OLDPWD/DemoNetCoreWebAppGHA.2.1.0-demo${{ github.run_number }}-${{ github.run_attempt }}.zip" .)
         echo "version=2.1.0-demo${{ github.run_number }}-${{ github.run_attempt }}" >> $GITHUB_OUTPUT
 
