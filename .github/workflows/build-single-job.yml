@@ -50,7 +50,7 @@ jobs:
       uses: OctopusDeploy/create-release-action@enh-executions-api
       id: 'create_release'
       with:
-        project: 'DemoNetCoreWebApp'
+        project: 'DemoNetCoreWebAppSingleJob'
         package_version: ${{ steps.build.outputs.version }}
 
     - name: Deploy the release in Octopus Deploy 🐙
