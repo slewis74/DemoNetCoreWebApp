@@ -1,6 +1,8 @@
 name: Build, test and publish - single job
 
 on:
+  push:
+    branches: '**'
   workflow_dispatch:
 
 jobs:
