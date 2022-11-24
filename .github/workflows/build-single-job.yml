@@ -1,0 +1,72 @@
+name: Build, test and publish - single job
+
+on:
+  workflow_dispatch:
+
+jobs:
+  all-the-things:
+    name: Build and unit test code
+    runs-on: ubuntu-latest
+
+    env:
+      OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
+      OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+      OCTOPUS_SPACE: 'GHA Demo'
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Run Build 🏗
+      id: build
+      run: |
+        dotnet publish ./source/WebApplication/WebApplication.csproj --output published -p:Version=2.0.${{ github.run_number }}
+        (cd published && zip -r "$OLDPWD/DemoNetCoreWebAppGHASingleJob.2.0.${{ github.run_number }}.zip" .)
+        echo "version=2.0.${{ github.run_number }}" >> $GITHUB_OUTPUT
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: DemoNetCoreWebAppGHASingleJob.2.0.${{ github.run_number }}
+        path: DemoNetCoreWebAppGHASingleJob.2.0.${{ github.run_number }}.zip
+
+    - name: Push a package to Octopus Deploy 🐙
+      uses: OctopusDeploy/push-package-action@enh-clientupdate
+      with:
+        packages: DemoNetCoreWebAppGHASingleJob.${{ steps.build.outputs.version }}.zip
+
+    - name: Push build information to Octopus Deploy 🐙
+      uses: OctopusDeploy/push-build-information-action@enh-clientupdate
+      with:
+        version: ${{ steps.build.outputs.version }}
+        packages: DemoNetCoreWebAppGHASingleJob
+
+    - name: Create a release in Octopus Deploy 🐙
+      uses: OctopusDeploy/create-release-action@enh-executions-api
+      id: 'create_release'
+      with:
+        project: 'DemoNetCoreWebApp'
+        package_version: ${{ steps.build.outputs.version }}
+
+    - name: Deploy the release in Octopus Deploy 🐙
+      uses: OctopusDeploy/deploy-release-untenanted-action@enh-initial-version
+      id: 'queue_deployments'
+      with:
+        project: 'DemoNetCoreWebAppSingleJob'
+        release_number: ${{ steps.create_release.outputs.release_number }}
+        environments: |
+          Development
+          Integration
+
+    - name: Waiting for 1st deployment in Octopus Deploy 🐙
+      uses: OctopusDeploy/await-task-action@enh-initialversion
+      with:
+        server_task_id: ${{ steps.queue_deployments[0].serverTaskId }}
+
+    - name: Waiting for 2nd deployment in Octopus Deploy 🐙
+      uses: OctopusDeploy/await-task-action@enh-initialversion
+      with:
+        server_task_id: ${{ steps.queue_deployments[1].serverTaskId }}

@@ -65,6 +65,9 @@ jobs:
     needs: [build, push]
     runs-on: ubuntu-latest
 
+    outputs:
+      release_number: ${{ steps.create_release.outputs.release_number }}
+
     env:
       OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
       OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
@@ -72,6 +75,7 @@ jobs:
 
     steps:
     - name: Create a release in Octopus Deploy 🐙
+      id: 'create_release'
       uses: OctopusDeploy/create-release-action@enh-executions-api
       with:
         project: 'DemoNetCoreWebApp'
@@ -96,7 +100,7 @@ jobs:
       id: 'queue_deployments'
       with:
         project: 'DemoNetCoreWebApp'
-        release_number: ${{ needs.build.outputs.version }}
+        release_number: ${{ needs.snapshot.outputs.release_number }}
         environments: |
           Development
           Integration
