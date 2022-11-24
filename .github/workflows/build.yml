@@ -24,14 +24,14 @@ jobs:
     - name: Run Build 🏗
       id: build
       run: |
-        dotnet publish ./source/WebApplication/WebApplication.csproj --output published -p:Version=2.0.${{ github.run_number }}
-        (cd published && zip -r "$OLDPWD/DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}.zip" .)
-        echo "version=2.0.${{ github.run_number }}" >> $GITHUB_OUTPUT
+        dotnet publish ./source/WebApplication/WebApplication.csproj --output published -p:Version=2.1.0-${{ github.run_number }}_${{ github.run_attempt }}
+        (cd published && zip -r "$OLDPWD/DemoNetCoreWebAppGHA.2.1.0-${{ github.run_number }}_${{ github.run_attempt }}.zip" .)
+        echo "version=2.1.0-${{ github.run_number }}_${{ github.run_attempt }}" >> $GITHUB_OUTPUT
 
     - uses: actions/upload-artifact@v3
       with:
-        name: DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}
-        path: DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}.zip
+        name: DemoNetCoreWebAppGHA.2.1.0-${{ github.run_number }}_${{ github.run_attempt }}
+        path: DemoNetCoreWebAppGHA.2.1.0-${{ github.run_number }}_${{ github.run_attempt }}.zip
 
   push:
     name: Push information to Octopus
@@ -46,7 +46,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@v3
       with:
-        name: DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}
+        name: DemoNetCoreWebAppGHA.2.1.0-${{ github.run_number }}_${{ github.run_attempt }}
         path: package
 
     - name: Push a package to Octopus Deploy 🐙
