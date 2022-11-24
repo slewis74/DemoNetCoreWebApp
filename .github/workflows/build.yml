@@ -52,7 +52,7 @@ jobs:
     - name: Push a package to Octopus Deploy 🐙
       uses: OctopusDeploy/push-package-action@enh-clientupdate
       with:
-        packages: DemoNetCoreWebAppGHA.${{ needs.build.outputs.version }}.zip
+        packages: ./DemoNetCoreWebAppGHA.${{ needs.build.outputs.version }}.zip
 
     - name: Push build information to Octopus Deploy 🐙
       uses: OctopusDeploy/push-build-information-action@enh-clientupdate
