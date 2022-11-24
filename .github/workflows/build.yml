@@ -50,7 +50,7 @@ jobs:
         path: DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}.zip
 
     - name: Push a package to Octopus Deploy 🐙
-      uses: OctopusDeploy/push-package-action@dfea6fd8a99905cf05607c2f46d1277b95fd2887
+      uses: OctopusDeploy/push-package-action@enh-clientupdate
       with:
         packages: DemoNetCoreWebAppGHA.${{ needs.build.outputs.version }}.zip
 
