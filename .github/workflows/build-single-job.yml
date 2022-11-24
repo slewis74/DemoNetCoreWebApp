@@ -27,13 +27,13 @@ jobs:
       id: build
       run: |
         dotnet publish ./source/WebApplication/WebApplication.csproj --output published -p:Version=2.0.${{ github.run_number }}
-        (cd published && zip -r "$OLDPWD/DemoNetCoreWebAppGHASingleJob.2.1.0-demo${{ github.run_number }}_${{ github.run_attempt }}.zip" .)
-        echo "version=2.1.0-demo${{ github.run_number }}_${{ github.run_attempt }}" >> $GITHUB_OUTPUT
+        (cd published && zip -r "$OLDPWD/DemoNetCoreWebAppGHASingleJob.2.1.0-demo${{ github.run_number }}-${{ github.run_attempt }}.zip" .)
+        echo "version=2.1.0-demo${{ github.run_number }}-${{ github.run_attempt }}" >> $GITHUB_OUTPUT
 
     - uses: actions/upload-artifact@v3
       with:
-        name: DemoNetCoreWebAppGHASingleJob.2.1.0-demo${{ github.run_number }}_${{ github.run_attempt }}
-        path: DemoNetCoreWebAppGHASingleJob.2.1.0-demo${{ github.run_number }}_${{ github.run_attempt }}.zip
+        name: DemoNetCoreWebAppGHASingleJob.2.1.0-demo${{ github.run_number }}-${{ github.run_attempt }}
+        path: DemoNetCoreWebAppGHASingleJob.2.1.0-demo${{ github.run_number }}-${{ github.run_attempt }}.zip
 
     - name: Push a package to Octopus Deploy 🐙
       uses: OctopusDeploy/push-package-action@enh-clientupdate
