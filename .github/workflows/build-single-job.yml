@@ -66,9 +66,9 @@ jobs:
     - name: Waiting for 1st deployment in Octopus Deploy 🐙
       uses: OctopusDeploy/await-task-action@enh-initialversion
       with:
-        server_task_id: ${{ steps.queue_deployments[0].serverTaskId }}
+        server_task_id: ${{ steps.queue_deployments.outputs[0].serverTaskId }}
 
     - name: Waiting for 2nd deployment in Octopus Deploy 🐙
       uses: OctopusDeploy/await-task-action@enh-initialversion
       with:
-        server_task_id: ${{ steps.queue_deployments[1].serverTaskId }}
+        server_task_id: ${{ steps.queue_deployments.outputs[1].serverTaskId }}
