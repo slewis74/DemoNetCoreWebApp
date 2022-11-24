@@ -47,12 +47,12 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}
-        path: DemoNetCoreWebAppGHA.2.0.${{ github.run_number }}.zip
+        path: package
 
     - name: Push a package to Octopus Deploy 🐙
       uses: OctopusDeploy/push-package-action@enh-clientupdate
       with:
-        packages: ./DemoNetCoreWebAppGHA.${{ needs.build.outputs.version }}.zip
+        packages: package/DemoNetCoreWebAppGHA.${{ needs.build.outputs.version }}.zip
 
     - name: Push build information to Octopus Deploy 🐙
       uses: OctopusDeploy/push-build-information-action@enh-clientupdate
