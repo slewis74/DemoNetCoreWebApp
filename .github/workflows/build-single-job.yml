@@ -54,7 +54,7 @@ jobs:
         package_version: ${{ steps.build.outputs.version }}
 
     - name: Deploy the release in Octopus Deploy 🐙
-      uses: OctopusDeploy/deploy-release-untenanted-action@enh-initial-version
+      uses: OctopusDeploy/deploy-release-action@enh-initial-version
       id: 'queue_deployments'
       with:
         project: 'DemoNetCoreWebAppSingleJob'
