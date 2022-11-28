@@ -46,7 +46,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@v3
       with:
-        name: DemoNetCoreWebAppGHA.2.1.0-demo${{ github.run_number }}-${{ github.run_attempt }}
+        name: DemoNetCoreWebAppGHA.${{ needs.build.outputs.version }}
         path: package
 
     - name: Push a package to Octopus Deploy 🐙
