@@ -96,19 +96,20 @@ jobs:
 
     steps:
     - name: Deploy the release in Octopus Deploy 🐙
-      uses: OctopusDeploy/deploy-release-action@enh-initial-version
+      uses: OctopusDeploy/deploy-release-tenanted-action@enh-initial-version
       id: 'queue_deployments'
       with:
         project: 'DemoNetCoreWebApp'
         release_number: ${{ needs.snapshot.outputs.release_number }}
-        environments: |
-          Development
-          Integration
+        environment: Development
+        tenants: Mars
+        tenant_tags: |
+          planets/gas giants
 
   wait:
     needs: deploy
     runs-on: ubuntu-latest
-    name: ${{ matrix.deployment.environmentName }}
+    name: ${{ matrix.deployment.tenantName }}
 
     env:
       OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
