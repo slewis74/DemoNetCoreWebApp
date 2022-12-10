@@ -36,7 +36,7 @@ jobs:
       with:
         package_id: DemoNetCoreWebAppGHASingleJob
         version: ${{ steps.build.outputs.version }}
-        files: ${{ steps.build.outputs.output_folder }}
+        files: ${{ steps.build.outputs.output_folder }}/**/*
         output_folder: packaged
 
     - uses: actions/upload-artifact@v3
