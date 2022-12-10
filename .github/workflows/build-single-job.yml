@@ -48,7 +48,7 @@ jobs:
     - name: Push a package to Octopus Deploy 🐙
       uses: OctopusDeploy/push-package-action@main
       with:
-        packages: ${{ steps.package.outputs.package_file }}
+        packages: ${{ steps.package.outputs.package_file_path }}
 
     - name: Push build information to Octopus Deploy 🐙
       uses: OctopusDeploy/push-build-information-action@main

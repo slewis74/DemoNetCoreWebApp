@@ -12,6 +12,7 @@ jobs:
 
     outputs:
       version: ${{ steps.build.outputs.version }}
+      artifact_name: ${{ steps.package.outputs.package_filename }}
 
     steps:
     - uses: actions/checkout@v3
@@ -56,13 +57,13 @@ jobs:
     steps:
     - uses: actions/download-artifact@v3
       with:
-        name: DemoNetCoreWebAppGHA.${{ needs.build.outputs.version }}
+        name: ${{ needs.build.outputs.artifact_name }}
         path: package
 
     - name: Push a package to Octopus Deploy 🐙
       uses: OctopusDeploy/push-package-action@main
       with:
-        packages: package/DemoNetCoreWebAppGHA.${{ needs.build.outputs.version }}.zip
+        packages: package/${{ needs.build.outputs.artifact_name }}
 
     - name: Push build information to Octopus Deploy 🐙
       uses: OctopusDeploy/push-build-information-action@main
