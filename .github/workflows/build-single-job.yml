@@ -27,34 +27,43 @@ jobs:
       id: build
       run: |
         dotnet publish ./source/WebApplication/WebApplication.csproj --output published -p:Version=2.1.${{ github.run_number }}
-        (cd published && zip -r "$OLDPWD/DemoNetCoreWebAppGHASingleJob.2.1.0-demo${{ github.run_number }}-${{ github.run_attempt }}.zip" .)
         echo "version=2.1.0-demo${{ github.run_number }}-${{ github.run_attempt }}" >> $GITHUB_OUTPUT
+        echo "output_folder=published" >> $GITHUB_OUTPUT
+
+    - name: Create Zip package 🐙
+      id: package
+      uses: OctopusDeploy/create-zip-package-action@main
+      with:
+        package_id: DemoNetCoreWebAppGHASingleJob
+        version: ${{ steps.build.outputs.version }}
+        files: ${{ steps.build.outputs.output_folder }}
+        output_folder: packaged
 
     - uses: actions/upload-artifact@v3
       with:
-        name: DemoNetCoreWebAppGHASingleJob.2.1.0-demo${{ github.run_number }}-${{ github.run_attempt }}
-        path: DemoNetCoreWebAppGHASingleJob.2.1.0-demo${{ github.run_number }}-${{ github.run_attempt }}.zip
+        name: DemoNetCoreWebAppGHASingleJob.${{ steps.build.outputs.version }}
+        path: ${{ steps.package.outputs.package_file }}
 
     - name: Push a package to Octopus Deploy 🐙
-      uses: OctopusDeploy/push-package-action@enh-clientupdate
+      uses: OctopusDeploy/push-package-action@main
       with:
-        packages: DemoNetCoreWebAppGHASingleJob.${{ steps.build.outputs.version }}.zip
+        packages: ${{ steps.package.outputs.package_file }}
 
     - name: Push build information to Octopus Deploy 🐙
-      uses: OctopusDeploy/push-build-information-action@enh-clientupdate
+      uses: OctopusDeploy/push-build-information-action@main
       with:
         version: ${{ steps.build.outputs.version }}
         packages: DemoNetCoreWebAppGHASingleJob
 
     - name: Create a release in Octopus Deploy 🐙
-      uses: OctopusDeploy/create-release-action@enh-executions-api
+      uses: OctopusDeploy/create-release-action@main
       id: 'create_release'
       with:
         project: 'DemoNetCoreWebAppSingleJob'
         package_version: ${{ steps.build.outputs.version }}
 
     - name: Deploy the release in Octopus Deploy 🐙
-      uses: OctopusDeploy/deploy-release-action@enh-initial-version
+      uses: OctopusDeploy/deploy-release-action@main
       id: 'queue_deployments'
       with:
         project: 'DemoNetCoreWebAppSingleJob'
@@ -64,11 +73,11 @@ jobs:
           Integration
 
     - name: Waiting for 1st deployment in Octopus Deploy 🐙
-      uses: OctopusDeploy/await-task-action@enh-initialversion
+      uses: OctopusDeploy/await-task-action@main
       with:
         server_task_id: ${{ fromJson(steps.queue_deployments.outputs.server_tasks)[0].serverTaskId }}
 
     - name: Waiting for 2nd deployment in Octopus Deploy 🐙
-      uses: OctopusDeploy/await-task-action@enh-initialversion
+      uses: OctopusDeploy/await-task-action@main
       with:
         server_task_id: ${{ fromJson(steps.queue_deployments.outputs.server_tasks)[1].serverTaskId }}
