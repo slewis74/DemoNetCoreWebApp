@@ -36,13 +36,14 @@ jobs:
       with:
         package_id: DemoNetCoreWebAppGHASingleJob
         version: ${{ steps.build.outputs.version }}
-        files: ${{ steps.build.outputs.output_folder }}/**/*
+        base_path: ${{ steps.build.outputs.output_folder }}
+        files: '**/*'
         output_folder: packaged
 
     - uses: actions/upload-artifact@v3
       with:
-        name: DemoNetCoreWebAppGHASingleJob.${{ steps.build.outputs.version }}
-        path: ${{ steps.package.outputs.package_file }}
+        name: ${{ steps.package.outputs.package_filename }}
+        path: ${{ steps.package.outputs.package_file_path }}
 
     - name: Push a package to Octopus Deploy 🐙
       uses: OctopusDeploy/push-package-action@main
