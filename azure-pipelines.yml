@@ -39,3 +39,4 @@ steps:
     PackageVersion: $(Build.BuildNumber)
     SourcePath: $(build.artifactstagingdirectory)
     OutputPath: 'drop'
+    DebugLogging: true
