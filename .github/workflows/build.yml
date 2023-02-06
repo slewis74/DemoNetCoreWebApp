@@ -31,7 +31,7 @@ jobs:
 
     - name: Create Zip package 🐙
       id: package
-      uses: OctopusDeploy/create-zip-package-action@fix-directoryhandling
+      uses: OctopusDeploy/create-zip-package-action@main
       with:
         package_id: DemoNetCoreWebAppGHA
         version: ${{ steps.build.outputs.version }}
