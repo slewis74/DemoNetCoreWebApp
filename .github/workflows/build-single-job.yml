@@ -57,7 +57,7 @@ jobs:
         packages: DemoNetCoreWebAppGHASingleJob
 
     - name: Create a release in Octopus Deploy 🐙
-      uses: OctopusDeploy/create-release-action@main
+      uses: OctopusDeploy/create-release-action@bug-executionapiversioncheck
       id: 'create_release'
       with:
         project: 'DemoNetCoreWebAppSingleJob'

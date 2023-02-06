@@ -87,7 +87,7 @@ jobs:
     steps:
     - name: Create a release in Octopus Deploy 🐙
       id: 'create_release'
-      uses: OctopusDeploy/create-release-action@main
+      uses: OctopusDeploy/create-release-action@bug-executionapiversioncheck
       with:
         project: 'DemoNetCoreWebApp'
         package_version: ${{ needs.build.outputs.version }}
