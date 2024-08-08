@@ -8,6 +8,6 @@ on:
       - **/*.md
 
 approval:
-  credential:
-    type: Contractor
-    require_face_check: false
+  require_face_check: false
+  credential_types:
+    - Contractor
