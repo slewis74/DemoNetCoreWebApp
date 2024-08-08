@@ -11,3 +11,6 @@ approval:
   require_face_check: false
   credential_types:
     - Contractor
+
+slack:
+  channel_name: ghapp
