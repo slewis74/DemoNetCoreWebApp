@@ -9,5 +9,5 @@ on:
 
 approval:
   credential:
-    type:
-      - Contractor
+    type: Contractor
+    require_face_check: false
