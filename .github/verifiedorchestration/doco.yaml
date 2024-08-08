@@ -1,0 +1,13 @@
+name: Documentation checks
+
+on:
+  pull_request:
+    branches: 
+      - main
+    paths:
+      - **/*.md
+
+approval:
+  credential:
+    type:
+      - Contractor
