@@ -5,7 +5,7 @@ on:
     branches: 
       - main
     paths:
-      - **/*.md
+      - '**/*.md'
 
 approval:
   require_face_check: false
