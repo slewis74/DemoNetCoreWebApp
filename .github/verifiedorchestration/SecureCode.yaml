@@ -1,16 +1,16 @@
-name: Documentation checks
+name: Secure Code
 
 on:
   pull_request:
     branches: 
       - main
     paths:
-      - '**/*.md'
+      - '**/*.cs'
 
 approval:
   require_face_check: false
   credential_types:
-    - Contractor
+    - Technician
 
 notifications:
   channel_name: ghapp
