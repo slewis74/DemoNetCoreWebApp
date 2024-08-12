@@ -10,7 +10,7 @@ on:
 approval:
   require_face_check: false
   credential_types:
-    - Contractor
+    - Technician
 
 notifications:
   channel_name: ghapp
