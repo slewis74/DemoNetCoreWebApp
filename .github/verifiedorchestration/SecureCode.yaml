@@ -1,0 +1,16 @@
+name: Secure Code
+
+on:
+  pull_request:
+    branches: 
+      - main
+    paths:
+      - '**/*.cs'
+
+approval:
+  require_face_check: false
+  credential_types:
+    - Contractor
+
+notifications:
+  channel_name: ghapp
