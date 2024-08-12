@@ -12,5 +12,5 @@ approval:
   credential_types:
     - Contractor
 
-slack:
+notifications:
   channel_name: ghapp
