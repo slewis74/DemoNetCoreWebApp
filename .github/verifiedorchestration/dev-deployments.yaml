@@ -1,0 +1,14 @@
+name: Dev Deployments
+
+on:
+  deployment:
+    environments: 
+      - Development
+
+approval:
+  require_face_check: false
+  credential_types:
+    - Contractor
+
+notifications:
+  channel_name: ghapp
