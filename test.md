@@ -4,4 +4,4 @@ A new file for testing
 
 test new config
 
-test....123..
+test....123.
